@@ -17,7 +17,7 @@ namespace MBitcoinCash.MerkleTree
         /// <summary>
         /// The hash of this leaf node
         /// </summary>
-        private IHash leafHash;
+        private readonly IHash leafHash;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MerkleLeaf"/> class.

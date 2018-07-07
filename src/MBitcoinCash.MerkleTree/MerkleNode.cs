@@ -17,17 +17,17 @@ namespace MBitcoinCash.MerkleTree
         /// <summary>
         /// The left child node
         /// </summary>
-        private MerkleNodeBase left;
+        private readonly MerkleNodeBase left;
 
         /// <summary>
         /// The right child node
         /// </summary>
-        private MerkleNodeBase right;
+        private readonly MerkleNodeBase right;
 
         /// <summary>
         /// The hash of this node
         /// </summary>
-        private IHash nodeHash;
+        private readonly IHash nodeHash;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MerkleNode"/> class.
@@ -39,7 +39,7 @@ namespace MBitcoinCash.MerkleTree
         {
             this.right = right;
             this.left = left;
-            this.nodeHash = hashProvider.ComputeHash(left.Hash.HashBytes.Concat(right.Hash.HashBytes).ToArray());
+            this.nodeHash = hashProvider.ComputeHash(left.Hash.GetHashBytes().Concat(right.Hash.GetHashBytes()).ToArray());
         }
 
         /// <inheritdoc/>

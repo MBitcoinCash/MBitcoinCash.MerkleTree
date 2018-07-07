@@ -1,4 +1,4 @@
-// <copyright file="MerkleTreeTests.cs" company="Modular Bitcoin Cash">
+﻿// <copyright file="HierarchicalMerkleTreeTests.cs" company="Modular Bitcoin Cash">
 // Copyright (c) 2018-2018 Modular Bitcoin Cash developers.
 // Distributed under the MIT software license, see the accompanying LICENSE file in the project root
 // or http://www.opensource.org/licenses/mit-license.php for full license information.
@@ -10,10 +10,10 @@ namespace MBitcoinCash.MerkleTree.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Tests for <seealso cref="MerkleTree"/> class.
+    /// Tests for <seealso cref="HierarchicalMerkleTree"/> class.
     /// </summary>
     [TestClass]
-    public class MerkleTreeTests
+    public class HierarchicalMerkleTreeTests
     {
         /// <summary>
         /// Merkles the root hash calculated correctly for single hash.
@@ -21,22 +21,26 @@ namespace MBitcoinCash.MerkleTree.Tests
         [TestMethod]
         public void MerkleRootHashCalculatedCorrectlyForSingleHash()
         {
-            string[] tx = { "fd636107ceb6de2486331ad662955d09abf0414079f2ea59f12da2cfa15c4561" };
+            string[] transactionHashes = { "fd636107ceb6de2486331ad662955d09abf0414079f2ea59f12da2cfa15c4561" };
             string rootHash = "fd636107ceb6de2486331ad662955d09abf0414079f2ea59f12da2cfa15c4561";
 
-            var txHash = tx.Select(x => new Hash(x)).ToList<IHash>();
-            var merkleTree = new MerkleTree(new DoubleSHA256());
-            merkleTree.BuildTree(txHash);
+            var hashes = transactionHashes.Select(x => new Hash(x)).ToList<IHash>();
+            var merkleTree = new HierarchicalMerkleTree(new DoubleSHA256());
+            merkleTree.BuildTree(hashes);
             Assert.AreEqual(rootHash, merkleTree.GetRootHash().ToString());
         }
 
         /// <summary>
         /// Merkles the root hash calculated correctly.
         /// </summary>
+        /// <remarks>
+        /// Test is based on block from Bitcoint testnet block:
+        /// https://testnet.blockchain.info/block/00000000f47381bc197925d40088e60786e567be678d2770c582d4c115ead284
+        /// </remarks>
         [TestMethod]
         public void MerkleRootHashCalculatedCorrectly()
         {
-            string[] tx =
+            string[] transactionHashes =
                 {
                     "fd636107ceb6de2486331ad662955d09abf0414079f2ea59f12da2cfa15c4561",
                     "088b7d88355a96633fb9586806d75d9c7e6e08b8ddaea8155f4be5ef180df3a7",
@@ -62,10 +66,39 @@ namespace MBitcoinCash.MerkleTree.Tests
                 };
             string rootHash = "a17a4959eacfae4f3e06c4129c87e627ce6fe93987e78b66999a38e684c6fed5";
 
-            var txHash = tx.Select(x => new Hash(x)).ToList<IHash>();
-            var merkleTree = new MerkleTree(new DoubleSHA256());
-            merkleTree.BuildTree(txHash);
+            var hashes = transactionHashes.Select(x => new Hash(x)).ToList<IHash>();
+            var merkleTree = new HierarchicalMerkleTree(new DoubleSHA256());
+            merkleTree.BuildTree(hashes);
             Assert.AreEqual(rootHash, merkleTree.GetRootHash().ToString());
+        }
+
+        /// <summary>
+        /// Merkles the root hash calculated correctly.
+        /// </summary>
+        [TestMethod]
+        public void SameRootForDifferentListOfHashes()
+        {
+            string[] stringHashes1 =
+                {
+                    "fd636107ceb6de2486331ad662955d09abf0414079f2ea59f12da2cfa15c4561",
+                    "088b7d88355a96633fb9586806d75d9c7e6e08b8ddaea8155f4be5ef180df3a7",
+                    "dee47a1af1fbdc1ea8415ad046677234b008aac1a1f46365c5b59a33eca48065",
+                };
+            string[] stringHashes2 =
+                {
+                    "fd636107ceb6de2486331ad662955d09abf0414079f2ea59f12da2cfa15c4561",
+                    "088b7d88355a96633fb9586806d75d9c7e6e08b8ddaea8155f4be5ef180df3a7",
+                    "dee47a1af1fbdc1ea8415ad046677234b008aac1a1f46365c5b59a33eca48065",
+                    "dee47a1af1fbdc1ea8415ad046677234b008aac1a1f46365c5b59a33eca48065",
+                };
+
+            var hashes1 = stringHashes1.Select(x => new Hash(x)).ToList<IHash>();
+            var hashes2 = stringHashes1.Select(x => new Hash(x)).ToList<IHash>();
+            var merkleTree1 = new HierarchicalMerkleTree(new DoubleSHA256());
+            var merkleTree2 = new HierarchicalMerkleTree(new DoubleSHA256());
+            merkleTree1.BuildTree(hashes1);
+            merkleTree2.BuildTree(hashes2);
+            Assert.AreEqual(merkleTree1.GetRootHash().ToString(), merkleTree2.GetRootHash().ToString());
         }
     }
 }

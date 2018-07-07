@@ -1,4 +1,4 @@
-﻿// <copyright file="MerkleTree.cs" company="Modular Bitcoin Cash">
+﻿// <copyright file="HierarchicalMerkleTree.cs" company="Modular Bitcoin Cash">
 // Copyright (c) 2018-2018 Modular Bitcoin Cash developers.
 // Distributed under the MIT software license, see the accompanying LICENSE file in the project root
 // or http://www.opensource.org/licenses/mit-license.php for full license information.
@@ -13,7 +13,8 @@ namespace MBitcoinCash.MerkleTree
     /// <summary>
     /// The Merkle Tree structure.
     /// </summary>
-    public class MerkleTree
+    /// <seealso cref="MBitcoinCash.MerkleTree.IMerkleTree" />
+    public class HierarchicalMerkleTree : IMerkleTree
     {
         /// <summary>
         /// The objeckt that knows how to calculate hashes
@@ -26,18 +27,16 @@ namespace MBitcoinCash.MerkleTree
         private MerkleNodeBase root;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MerkleTree"/> class.
+        /// Initializes a new instance of the <see cref="HierarchicalMerkleTree"/> class.
         /// </summary>
         /// <param name="hashProvider">The hash provider.</param>
-        public MerkleTree(IHashProvider hashProvider)
+        public HierarchicalMerkleTree(IHashProvider hashProvider)
         {
             this.hashProvider = hashProvider;
         }
 
-        /// <summary>
-        /// Gets the Merkle Tree root hash.
-        /// </summary>
-        /// <returns>The hash of Merkle Tree root.</returns>
+        /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Property should not throw exceptions.")]
         public IHash GetRootHash()
         {
             if (this.root == null)

@@ -1,4 +1,4 @@
-﻿// <copyright file="IHash.cs" company="Modular Bitcoin Cash">
+﻿// <copyright file="IMerkleTree.cs" company="Modular Bitcoin Cash">
 // Copyright (c) 2018-2018 Modular Bitcoin Cash developers.
 // Distributed under the MIT software license, see the accompanying LICENSE file in the project root
 // or http://www.opensource.org/licenses/mit-license.php for full license information.
@@ -7,16 +7,14 @@
 namespace MBitcoinCash.MerkleTree
 {
     /// <summary>
-    /// Interface for the object that stores calculated hash.
+    /// Interface for MekleTree.
     /// </summary>
-    public interface IHash
+    public interface IMerkleTree
     {
         /// <summary>
-        /// Gets the hash as byte array.
+        /// Gets the Merkle Tree root hash.
         /// </summary>
-        /// <returns>
-        /// The hash as byte array.
-        /// </returns>
-        byte[] GetHashBytes();
+        /// <returns>The hash of Merkle Tree root.</returns>
+        IHash GetRootHash();
     }
 }

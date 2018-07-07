@@ -7,6 +7,7 @@
 namespace MBitcoinCash.MerkleTree.Tests
 {
     using System;
+    using System.Globalization;
     using System.Linq;
 
     /// <summary>
@@ -16,12 +17,17 @@ namespace MBitcoinCash.MerkleTree.Tests
     internal class Hash : IHash
     {
         /// <summary>
+        /// The hash as bytes array.
+        /// </summary>
+        private readonly byte[] hashBytes;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Hash"/> class.
         /// </summary>
         /// <param name="hash">The hash.</param>
         internal Hash(byte[] hash)
         {
-            this.HashBytes = hash;
+            this.hashBytes = hash;
         }
 
         /// <summary>
@@ -30,21 +36,25 @@ namespace MBitcoinCash.MerkleTree.Tests
         /// <param name="hash">The hash.</param>
         internal Hash(string hash)
         {
-            this.HashBytes = Enumerable.Range(0, hash.Length / 2).Select(x => Convert.ToByte(hash.Substring(x * 2, 2), 16)).ToArray();
-            Array.Reverse(this.HashBytes);
+            this.hashBytes = Enumerable.Range(0, hash.Length / 2).Select(x => Convert.ToByte(hash.Substring(x * 2, 2), 16)).ToArray();
+            Array.Reverse(this.hashBytes);
         }
 
         /// <inheritdoc/>
-        public byte[] HashBytes { get; }
+        public byte[] GetHashBytes()
+        {
+            return (byte[])this.hashBytes.Clone();
+        }
 
         /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "This is hash in hex format, so it does not have any characters affected by conversion to lower.")]
         public override string ToString()
         {
-            var reversedArray = new byte[this.HashBytes.Length];
-            this.HashBytes.CopyTo(reversedArray, 0);
+            var reversedArray = new byte[this.hashBytes.Length];
+            this.hashBytes.CopyTo(reversedArray, 0);
             Array.Reverse(reversedArray);
 
-            return BitConverter.ToString(reversedArray).Replace("-", string.Empty).ToLower();
+            return BitConverter.ToString(reversedArray).Replace("-", string.Empty, StringComparison.InvariantCulture).ToLowerInvariant();
         }
     }
 }
